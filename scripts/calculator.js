@@ -49,74 +49,67 @@ function createButtons(){
         button;
     for (let numButtons = 0; numButtons < 20; numButtons++){
         button = document.createElement('button');
-        
-        if (numButtons < 15){
-            if (numButtons < 10){
-                button.id = numButtons;
-                button.innerText = numButtons;
-            }
-            else if (numButtons == 10){
-                button.id = 'decimal';
-                button.innerText = '.';
-            }
-            else if (numButtons == 11){
-                button.id = 'negative-sign';
-                button.innerText = '(-)';
-            }
-            else if (numButtons == 12){
-                button.id = 'clear'
-                button.innerText = 'Clear'
-            }
-            else if (numButtons == 13){
-                button.id = 'exponent';
-                button.innerText = '^';
-            }
-            else {
-                button.id = 'delete'
-                button.innerText = 'Delete'
-            }
+        button.id = numButtons
+        if (button.id < 15){
             numbersContainer.appendChild(button);
         }
         else {
-            if (numButtons == 15){
-                button.id = 'divide';
-                button.innerText = '/';
-            }
-            else if (numButtons == 16){
-                button.id = 'multiply';
-                button.innerText = '*'
-            }
-            else if (numButtons == 17){
-                button.id = 'subtract';
-                button.innerText = '-'
-            }
-            else if (numButtons == 18){
-                button.id = 'add';
-                button.innerText = '+';
-            }
-            else {
-                button.id = 'enter';
-                button.innerText = 'Enter'
-            }
             operatorsContainer.appendChild(button);
         }
+        
     }
     
 }
 
 function labelButtons(){
-    if (numButtons == 3){
-        button.innerText = 'Clear';
-    }
-    else if (numButtons == 7) {
-        button.innerText = '/';
-    }
-    else if (numButtons == 11){
-        button.innerText = '*';
-    }
-    else if (numButtons){
+    let buttons = document.querySelectorAll('button');
 
-    }
+    buttons.forEach((button) => {
+        if (button.id < 10){
+            button.innerText = button.id;
+        }
+        else if (button.id == 10){
+            button.id = 'decimal';
+            button.innerText = '.';
+        }
+        else if (button.id == 11){
+            button.id = 'negative-sign';
+            button.innerText = '(-)';
+        }
+        else if (button.id == 12){
+            button.id = 'clear'
+            button.innerText = 'Clear'
+        }
+        else if (button.id == 13){
+            button.id = 'exponent';
+            button.innerText = '^';
+        }
+        else if (button.id ==14){
+            button.id = 'delete'
+            button.innerText = 'Delete'
+        }
+        else if (button.id == 15){
+            button.id = 'divide';
+            button.innerText = '/';
+        }
+        else if (button.id == 16){
+            button.id = 'multiply';
+            button.innerText = '*'
+        }
+        else if (button.id == 17){
+            button.id = 'subtract';
+            button.innerText = '-'
+        }
+        else if (button.id == 18){
+            button.id = 'add';
+            button.innerText = '+';
+        }
+        else {
+            button.id = 'enter';
+            button.innerText = 'Enter'
+        }
+    });
 }
     
 createButtons();
+labelButtons();
