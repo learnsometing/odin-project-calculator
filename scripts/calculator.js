@@ -110,6 +110,21 @@ function labelButtons(){
         }
     });
 }
-    
+
+function activateButtons(){
+    let buttons = document.querySelectorAll('button');
+    buttons.forEach((button) => {
+        button.addEventListener('click', (e) => {
+                buttonText = button.innerText,
+                display = document.getElementById('display'),
+                displayText = document.createElement('p');
+
+            displayText.textContent = buttonText;
+            display.appendChild(displayText);
+        });
+    });
+}
+
 createButtons();
 labelButtons();
+activateButtons();
