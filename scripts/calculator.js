@@ -43,3 +43,14 @@ function operate(number1, number2, operator){
     return result;
 }
 
+function createButtons(){
+    let buttonsContainer = document.getElementById("buttons"),
+        button;
+    for (let numButtons = 0; numButtons < 20; numButtons++){
+        button = document.createElement('button');
+        button.innerText = numButtons;
+        buttonsContainer.appendChild(button);
+    }
+}
+    
+createButtons();
