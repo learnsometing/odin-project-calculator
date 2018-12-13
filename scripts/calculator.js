@@ -126,10 +126,10 @@ function clicked(input){
     displayText;
 
     if (buttonText == 'Clear'){
-        //call clear() method
+        clearDisplay();
     }
     else if (buttonText == 'Delete'){
-        //call delete() method
+        deleteText();
     }
     else if (buttonText == 'Enter'){
         //call operate() method
@@ -139,6 +139,28 @@ function clicked(input){
         displayText.textContent = buttonText;
         display.appendChild(displayText);
     }  
+}
+
+function clearDisplay(){
+    let display = document.getElementById('display'),
+        paragraph = document.querySelector('p');
+    
+    if (display.contains(paragraph)){
+        let displayText = document.querySelectorAll('p');
+        displayText.forEach((paragraph) => {
+            display.removeChild(paragraph);
+        });
+    }
+}
+
+function deleteText(){
+    let display = document.getElementById('display'),
+        paragraph = document.querySelector('p');
+    
+    if (display.contains(paragraph)){
+        let lastChild = display.lastChild;
+        display.removeChild(lastChild);
+    }
 }
 
 createButtons();
