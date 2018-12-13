@@ -27,7 +27,7 @@ body{
 #logo{
     display: flex;
     grid-area: logo;
-    background-color:lightyellow;
+    background-color: lightgoldenrodyellow;
     align-items: center;
 }
 
@@ -41,7 +41,16 @@ h5{
 
 #display{
     grid-area: display;
-    background-color: lightyellow
+    display: inline-grid;
+    grid-template-columns: repeat(16, 0.5em);
+    grid-template-rows: 1 1em;
+    background-color: lightyellow;
+}
+
+p{
+    display: flex;
+    justify-self: left;
+    /* float: right; */
 }
 
 #buttons{

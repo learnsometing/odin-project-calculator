@@ -1,33 +1,34 @@
+let result;
+    
 function add(number1, number2){
-    let result = number1 + number2;
+    result = number1 + number2;
     return result;
 }
 
 console.log(add(100, 2));
 
 function subtract(number1, number2){
-    let result = number1 - number2;
+    result = number1 - number2;
     return result;
 }
 
 console.log(subtract(1, 100));
 
 function multiply(number1, number2){
-    let result = number1 * number2;
+    result = number1 * number2;
     return result;
 }
 
 console.log(multiply(1, -2));
 
 function divide(number1, number2){
-    let result = number1 / number2;
+    result = number1 / number2;
     return result;
 }
 
 console.log(divide(2, 0))
 
-function operate(number1, number2, operator){
-    let result = 0;
+function operate(number1, operator, number2){
     if (operator == '+'){
         result = add(number1, number2)
     }
@@ -74,7 +75,7 @@ function labelButtons(){
         }
         else if (button.id == 11){
             button.id = 'negative-sign';
-            button.innerText = '(-)';
+            button.innerText = '(- )';
         }
         else if (button.id == 12){
             button.id = 'clear'
@@ -84,7 +85,7 @@ function labelButtons(){
             button.id = 'exponent';
             button.innerText = '^';
         }
-        else if (button.id ==14){
+        else if (button.id == 14){
             button.id = 'delete'
             button.innerText = 'Delete'
         }
@@ -114,15 +115,30 @@ function labelButtons(){
 function activateButtons(){
     let buttons = document.querySelectorAll('button');
     buttons.forEach((button) => {
-        button.addEventListener('click', (e) => {
-                buttonText = button.innerText,
-                display = document.getElementById('display'),
-                displayText = document.createElement('p');
-
-            displayText.textContent = buttonText;
-            display.appendChild(displayText);
-        });
+        button.addEventListener('click', (e) => {clicked(button);});
     });
+}
+
+function clicked(input){
+    let button = input,
+    buttonText = button.innerText,
+    display = document.getElementById('display'),
+    displayText;
+
+    if (buttonText == 'Clear'){
+        //call clear() method
+    }
+    else if (buttonText == 'Delete'){
+        //call delete() method
+    }
+    else if (buttonText == 'Enter'){
+        //call operate() method
+    }
+    else{
+        displayText = document.createElement('p');
+        displayText.textContent = buttonText;
+        display.appendChild(displayText);
+    }  
 }
 
 createButtons();
