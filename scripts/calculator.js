@@ -132,12 +132,17 @@ function clicked(input){
         deleteText();
     }
     else if (buttonText == 'Enter'){
-        //call operate() method
+        enter();
     }
     else{
-        displayText = document.createElement('p');
-        displayText.textContent = buttonText;
-        display.appendChild(displayText);
+        if (display.querySelectorAll('p').length == 16){
+            alert('You have reached the maximum character limit. Enter your input or modify it to stay within the display.');
+        }
+        else {
+            displayText = document.createElement('p');
+            displayText.textContent = buttonText;
+            display.appendChild(displayText);
+        }
     }  
 }
 
@@ -161,6 +166,26 @@ function deleteText(){
         let lastChild = display.lastChild;
         display.removeChild(lastChild);
     }
+}
+
+function enter(){
+    let display = document.getElementById('display'),
+    text = document.querySelector('p'),
+    textNodes = document.querySelectorAll('p'),
+    displayText = [];
+
+    if (display.contains(text)){
+        textNodes.forEach((node) => {
+            displayText.push(node.textContent);
+            return displayText;
+        });
+        console.log(displayText);
+        console.log(typeof displayText);
+    }
+    else {
+        alert('There is no math to be done')
+    }
+
 }
 
 createButtons();
