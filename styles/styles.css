@@ -41,16 +41,12 @@ h5{
 
 #display{
     grid-area: display;
-    display: inline-grid;
-    grid-template-columns: repeat(16, 0.5em);
-    grid-template-rows: 1 1em;
     background-color: lightyellow;
 }
 
 p{
     display: flex;
     justify-self: left;
-    /* float: right; */
 }
 
 #buttons{

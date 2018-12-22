@@ -5,28 +5,35 @@ function add(number1, number2){
     return result;
 }
 
-console.log(add(100, 2));
+// console.log(add(100, 2));
 
 function subtract(number1, number2){
     result = number1 - number2;
     return result;
 }
 
-console.log(subtract(1, 100));
+// console.log(subtract(1, 100));
 
 function multiply(number1, number2){
     result = number1 * number2;
     return result;
 }
 
-console.log(multiply(1, -2));
+// console.log(multiply(1, -2));
 
 function divide(number1, number2){
     result = number1 / number2;
     return result;
 }
 
-console.log(divide(2, 0))
+// console.log(divide(2, 0));
+
+function exponent(number1, number2){
+    result = number1 ** number2;
+    return result;
+}
+
+// console.log(exponent(2, 2));
 
 function operate(number1, operator, number2){
     if (operator == '+'){
@@ -37,6 +44,9 @@ function operate(number1, operator, number2){
     }
     else if (operator == '*'){
         result = multiply(number1, number2)
+    }
+    else if (operator == '^'){
+        result = exponent(number1, number2);
     }
     else {
         result = divide(number1, number2)
@@ -57,9 +67,7 @@ function createButtons(){
         else {
             operatorsContainer.appendChild(button);
         }
-        
     }
-    
 }
 
 function labelButtons(){
@@ -119,11 +127,10 @@ function activateButtons(){
     });
 }
 
-function clicked(input){
-    let button = input,
-    buttonText = button.innerText,
-    display = document.getElementById('display'),
-    displayText;
+function clicked(button){
+    let buttonText = button.innerText,
+    text = document.querySelector('p'),
+    textString = text.innerText;
 
     if (buttonText == 'Clear'){
         clearDisplay();
@@ -135,50 +142,47 @@ function clicked(input){
         enter();
     }
     else{
-        if (display.querySelectorAll('p').length == 16){
+        if (textString.length == 16){
             alert('You have reached the maximum character limit. Enter your input or modify it to stay within the display.');
         }
         else {
-            displayText = document.createElement('p');
-            displayText.textContent = buttonText;
-            display.appendChild(displayText);
-        }
-    }  
+            textString += buttonText;
+            text.innerText = textString;
+        }  
+    }
 }
 
+
 function clearDisplay(){
-    let display = document.getElementById('display'),
-        paragraph = document.querySelector('p');
+    let text = document.querySelector('p');
     
-    if (display.contains(paragraph)){
-        let displayText = document.querySelectorAll('p');
-        displayText.forEach((paragraph) => {
-            display.removeChild(paragraph);
-        });
-    }
+    text.innerText = '';
 }
 
 function deleteText(){
-    let display = document.getElementById('display'),
-        paragraph = document.querySelector('p');
-    
-    if (display.contains(paragraph)){
-        let lastChild = display.lastChild;
-        display.removeChild(lastChild);
-    }
+    let text = document.querySelector('p');
+        textString = text.innerText,
+        lastIndex = textString.length - 1;
+
+        textString = textString.slice(0, lastIndex);
+        text.innerText = textString;
 }
 
 function enter(){
     let display = document.getElementById('display'),
     text = document.querySelector('p'),
     textNodes = document.querySelectorAll('p'),
-    displayText = [];
+    displayText = '',
+    operators = /[+*.^-]/,
+    result;
 
     if (display.contains(text)){
         textNodes.forEach((node) => {
-            displayText.push(node.textContent);
+            displayText += node.textContent;
             return displayText;
         });
+
+        displayText = displayText.split(operators);
         console.log(displayText);
         console.log(typeof displayText);
     }
