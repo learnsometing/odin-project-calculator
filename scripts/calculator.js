@@ -169,27 +169,99 @@ function deleteText(){
 }
 
 function enter(){
-    let display = document.getElementById('display'),
-    text = document.querySelector('p'),
-    textNodes = document.querySelectorAll('p'),
-    displayText = '',
-    operators = /[+*.^-]/,
-    result;
+    let text = document.querySelector('p'),
+        textString = text.innerText;
 
-    if (display.contains(text)){
-        textNodes.forEach((node) => {
-            displayText += node.textContent;
-            return displayText;
-        });
+    function convertToArray(){
+        firstCharacter = textString[0],
+        lastIndex = textString.length - 1,
+        lastCharacter = textString[lastIndex],
+        textArray = [],
+        tempString = '',
+        operator = /[*/^+-]/,
+        multipleOperators = /[*/^+-](?=[*/^+-])/;
 
-        displayText = displayText.split(operators);
-        console.log(displayText);
-        console.log(typeof displayText);
+        const firstCharIsOperator = operator.test(firstCharacter),
+            multipleOperatorsInARow = multipleOperators.test(textString),
+            lastCharIsOperator = operator.test(lastCharacter);
+
+        if (firstCharIsOperator || multipleOperatorsInARow || lastCharIsOperator){
+            alert ('The formula you entered contains errors. Please re-enter your formula.');
+        }
+        else {
+            for (let i = 0; i < textString.length; i++){
+                let textCharacter = textString.charAt(i),
+                    charIsOperator = operator.test(textCharacter);
+
+                if (charIsOperator || i == lastIndex){
+                    if (!(i == lastIndex)){
+                        textArray.push(tempString);
+                        tempString = '';
+                    }
+
+                    textArray.push(textCharacter);
+                }
+                else{
+                    tempString += textCharacter;
+                }
+            }
+        }
+        return textArray;
     }
-    else {
-        alert('There is no math to be done')
+
+    function doTheMath(array){
+        let finalAnswer,
+            tempAnswer,
+            operatorIndex,
+            firstOperandIndex,
+            secondOperandIndex,
+            firstOperand,
+            secondOperand,
+            operator,
+            operators = /[*^/+-]/,
+            exp = '^',
+            mult = '*'
+            div = '/',
+            plus = '+',
+            minus = '-';
+
+        while(operators.test(array)){
+            if (array.includes(exp)){
+                operatorIndex = array.indexOf(exp);
+            }
+            else if (array.includes(mult)){
+                operatorIndex = array.indexOf(mult);
+            }
+            else if (array.includes(div)){
+                operatorIndex = array.indexOf(div);
+            }
+            else if (array.includes(plus)){
+                operatorIndex = array.indexOf(plus);
+            }
+            else{ //minus
+                operatorIndex = array.indexOf(minus);
+            }
+            console.log(operatorIndex);
+
+            firstOperandIndex = operatorIndex - 1;
+            secondOperandIndex = operatorIndex + 1;
+
+            firstOperand = parseInt(array[firstOperandIndex]);
+            secondOperand = parseInt(array[secondOperandIndex]);
+            operator = array[operatorIndex];
+
+            tempAnswer = operate(firstOperand, operator, secondOperand);
+            array.splice(firstOperandIndex, 3, tempAnswer);
+        }
+
+        console.log(array);
+        finalAnswer = array.toString();
+        text.innerText = finalAnswer;
+        return finalAnswer;
+
     }
 
+    doTheMath(convertToArray());
 }
 
 createButtons();
