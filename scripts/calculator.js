@@ -130,7 +130,9 @@ function activateButtons(){
 function clicked(button){
     let buttonText = button.innerText,
     text = document.querySelector('p'),
-    textString = text.innerText;
+    textString = text.innerText
+    textRect = text.getBoundingClientRect(),
+    width = textRect.width;
 
     if (buttonText == 'Clear'){
         clearDisplay();
@@ -142,7 +144,7 @@ function clicked(button){
         enter();
     }
     else{
-        if (textString.length == 16){
+        if (textString){ //need to check the width of the text vs the width of the rectangle here.
             alert('You have reached the maximum character limit. Enter your input or modify it to stay within the display.');
         }
         else {
@@ -151,7 +153,6 @@ function clicked(button){
         }  
     }
 }
-
 
 function clearDisplay(){
     let text = document.querySelector('p');
@@ -206,6 +207,8 @@ function enter(){
                 }
             }
         }
+        console.log(textArray);
+
         return textArray;
     }
 
@@ -246,8 +249,8 @@ function enter(){
             firstOperandIndex = operatorIndex - 1;
             secondOperandIndex = operatorIndex + 1;
 
-            firstOperand = parseInt(array[firstOperandIndex]);
-            secondOperand = parseInt(array[secondOperandIndex]);
+            firstOperand = parseFloat(array[firstOperandIndex]);
+            secondOperand = parseFloat(array[secondOperandIndex]);
             operator = array[operatorIndex];
 
             tempAnswer = operate(firstOperand, operator, secondOperand);
@@ -255,7 +258,13 @@ function enter(){
         }
 
         console.log(array);
+
         finalAnswer = array.toString();
+        console.log(finalAnswer);
+        Math.round(finalAnswer);
+
+        console.log(finalAnswer);
+
         text.innerText = finalAnswer;
         return finalAnswer;
 
