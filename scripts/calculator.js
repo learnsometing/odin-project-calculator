@@ -130,9 +130,12 @@ function activateButtons(){
 function clicked(button){
     let buttonText = button.innerText,
     text = document.querySelector('p'),
-    textString = text.innerText
+    textString = text.innerText,
     textRect = text.getBoundingClientRect(),
-    width = textRect.width;
+    textWidth = textRect.width,
+    display = document.getElementById('display'),
+    displayRect = display.getBoundingClientRect(),
+    displayWidth = displayRect.width;
 
     if (buttonText == 'Clear'){
         clearDisplay();
@@ -144,7 +147,7 @@ function clicked(button){
         enter();
     }
     else{
-        if (textString){ //need to check the width of the text vs the width of the rectangle here.
+        if (textWidth == displayWidth){ //need to check the width of the text vs the width of the rectangle here.
             alert('You have reached the maximum character limit. Enter your input or modify it to stay within the display.');
         }
         else {

@@ -42,11 +42,21 @@ h5{
 #display{
     grid-area: display;
     background-color: lightyellow;
+    max-width: 400px;
+    max-height: 50px;
 }
 
 p{
+    max-height:  inherit;
     display: flex;
+    box-sizing: border-box;
     justify-self: left;
+    width: fit-content;
+    padding: 10px;
+    align-items: center;
+    font-size: 0.8em;
+    max-width: inherit;
+    overflow: hidden;
 }
 
 #buttons{
