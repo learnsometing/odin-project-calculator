@@ -52,9 +52,9 @@ p{
     box-sizing: border-box;
     justify-self: left;
     width: fit-content;
-    padding: 10px;
+    /* padding: 10px; */
+    padding: 0 25px 0 25px;
     align-items: center;
-    font-size: 0.8em;
     max-width: inherit;
     overflow: hidden;
 }
