@@ -1,7 +1,9 @@
 let result,
 text = document.querySelector('p'),
 textString = text.innerText,
-textArray,
+currentNumber = '',
+lastIndex,
+textArray = [],
 textRect = text.getBoundingClientRect(),
 textWidth = textRect.width,
 display = document.getElementById('display'),
@@ -140,7 +142,7 @@ function labelAndActivateButtons(){
 
 function clicked(button){
     let buttonText = button.innerText;
-    
+
     if (buttonText == 'Clear'){
         clearDisplay();
     }
@@ -148,94 +150,76 @@ function clicked(button){
         deleteText();
     }
     else if (buttonText == '+/-'){
-        changeSigns();
+        if (currentNumber != ''){
+            changeSigns();
+        }
     }
     else if (buttonText == 'Enter'){
+        textArray.push(currentNumber);
         enter();
     }
-    else{
-        if (textWidth == displayWidth){ //need to check the width of the text vs the width of the rectangle here.
-            alert('You have reached the maximum character limit. Enter your input or modify it to stay within the display.');
+    else {  //numbers and operators
+        if (operatorRegExp.test(buttonText)){
+            if (!textString == '' && !operatorRegExp.test(textString[lastIndex])){ //prevent users from starting the string with an operator, or stringing multiple operators together
+                textString += buttonText;
+                textArray.push(currentNumber);
+                currentNumber = '';
+                textArray.push(buttonText);
+            }
+        }
+        else if (buttonText == '.'){
+            if (!textString == '' && !containsDecimals()){
+                textString += buttonText;
+                currentNumber += buttonText;
+            }
         }
         else {
             textString += buttonText;
-            text.innerText = textString;
-            storeFormulaInArray();
+            currentNumber += buttonText;
         }  
+        text.innerText = textString;
+        lastIndex = textString.length - 1;
     }
+}
+
+function containsDecimals(){
+    for (let i = 0; i < currentNumber.length; i++){
+        if (currentNumber.charAt(i) == '.'){
+            return true;
+        }
+    }
+
+    return false;
 }
 
 function clearDisplay(){    
     text.innerText = '';
     textString = '';
+    currentNumber = '';
+    textArray = [];
 }
 
 function deleteText(){
-    let lastIndex = textString.length - 1;
-
     textString = textString.slice(0, lastIndex);
+    lastIndex = textString.length - 1;
     text.innerText = textString;
+    // currentNumber = currentNumber.slice(0, currentNumber.length - 1);
 }
 
 function changeSigns(){
-    let lastArrayIndex = textArray.length - 1,
-    lastTypedChar = textArray[lastArrayIndex],
-    signOfLastTypedNumber;
+    let newString,
+    tempNumber;
 
-    if (!(operatorRegExp.test(lastTypedChar)) || lastTypedChar != '.'){
-        signOfLastTypedNumber = Math.sign(lastTypedChar);
-        if (signOfLastTypedNumber == 1 || signOfLastTypedNumber == -1){
-            lastTypedChar = operate(lastTypedChar, '*', -1);
-        }
-    }
+    tempNumber = operate(currentNumber, '*', -1);
+    newString = textString.replace(currentNumber,tempNumber);
 
-    textArray.splice(lastIndex, 1, lastTypedChar);
-    console.log(textArray);
-
-}
-
-function storeFormulaInArray(){
-    let lastIndex = textString.length - 1,
-    tempArray = [],
-    tempString = '';
-
-    for (let i = 0; i < textString.length; i++){
-        let textCharacter = textString.charAt(i),
-            charIsOperator = operatorRegExp.test(textCharacter);
-
-        if (charIsOperator || i == lastIndex){
-            if (i == lastIndex && !charIsOperator){
-                tempString += textCharacter;
-            }
-
-            tempArray.push(tempString);
-            tempString = '';
-
-            if (charIsOperator){
-                tempArray.push(textCharacter);
-            }                    
-        }
-        else{
-            tempString += textCharacter;
-        }
-    }
-    console.log(tempArray);
-    textArray = tempArray;
-    return tempArray;
+    currentNumber = tempNumber;
+    textString = newString;
+    text.innerText = textString;
 }
 
 function enter(){
-    // let firstCharacter = textString[0],
-    // lastCharacter = textString[lastIndex],
-    // multipleOperators = /[*/^+-](?=[*/^+-])/;
-
-    // const firstCharIsOperator = operator.test(firstCharacter),
-    // multipleOperatorsInARow = multipleOperators.test(textString),
-    // lastCharIsOperator = operator.test(lastCharacter);
-
-    // if (firstCharIsOperator || multipleOperatorsInARow || lastCharIsOperator){
-    //     alert ('The formula you entered contains errors. Please re-enter your formula.');
-    // }
+    doTheMath(textArray);
 
     function doTheMath(array){
         let finalAnswer,
@@ -247,7 +231,7 @@ function enter(){
             secondOperand,
             operator,
             exp = '^',
-            mult = '*'
+            mult = '*',
             div = '/',
             plus = '+',
             minus = '-';
@@ -265,7 +249,7 @@ function enter(){
             else if (array.includes(plus)){
                 operatorIndex = array.indexOf(plus);
             }
-            else{ //subtraction
+            else{ 
                 if ((array.length == 1) && (Math.sign(array[0]) == -1)){
                     break;
                 }
@@ -292,8 +276,6 @@ function enter(){
         return finalAnswer;
 
     }
-
-    doTheMath(textArray);
 }
 
 createButtons();
