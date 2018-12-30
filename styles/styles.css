@@ -51,12 +51,14 @@ p{
     display: flex;
     box-sizing: border-box;
     justify-self: left;
+    height: 50px;
     width: fit-content;
     /* padding: 10px; */
-    padding: 0 25px 0 25px;
+    padding: 10px 25px 10px 25px;
     align-items: center;
     max-width: inherit;
     overflow: hidden;
+    font-size: 0.8em;
 }
 
 #buttons{

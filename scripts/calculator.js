@@ -1,61 +1,56 @@
-let result,
-text = document.querySelector('p'),
-textString = text.innerText,
-currentNumber = '',
+let displayTextElement = document.querySelector('p'),
+displayTextString = '',
 lastIndex,
-textArray = [],
-textRect = text.getBoundingClientRect(),
-textWidth = textRect.width,
-display = document.getElementById('display'),
-displayRect = display.getBoundingClientRect(),
-displayWidth = displayRect.width;
+displayTextArray = [],
+currentNumber = '';
 
-const operatorRegExp = /[*/^+-]/;
+const operatorRegExp = /[*/^+-]/,
+exponentialRegExp = /e(?=[+-])/;
 
-
-function add(number1, number2){
-    result = number1 + number2;
-    return result;
-}
-
-function subtract(number1, number2){
-    result = number1 - number2;
+function exponent(number1, number2){
+    let result = number1 ** number2;
     return result;
 }
 
 function multiply(number1, number2){
-    result = number1 * number2;
+    let result = number1 * number2;
     return result;
 }
 
 function divide(number1, number2){
-    result = number1 / number2;
+    let result = number1 / number2;
     return result;
 }
 
-function exponent(number1, number2){
-    result = number1 ** number2;
+function add(number1, number2){
+    let result = number1 + number2;
+    return result;
+}
+
+function subtract(number1, number2){
+    let result = number1 - number2;
     return result;
 }
 
 function operate(number1, operator, number2){
-    if (operator == '+'){
-        result = add(number1, number2)
-    }
-    else if (operator == '-'){
-        result = subtract(number1, number2)
+    let result;
+
+    if (operator == '^'){
+        result = exponent(number1, number2);
     }
     else if (operator == '*'){
         result = multiply(number1, number2)
     }
-    else if (operator == '^'){
-        result = exponent(number1, number2);
-    }
-    else {
+    else if (operator == '/') {
         result = divide(number1, number2)
     }
+    else if (operator == '+'){
+        result = add(number1, number2)
+    }
+    else {
+        result = subtract(number1, number2)
+    }  
 
-    Math.round(result).toPrecision(4);
     return result;
 }
 
@@ -141,44 +136,54 @@ function labelAndActivateButtons(){
 }
 
 function clicked(button){
+    const display = document.getElementById('display'),
+    displayRectangle = display.getBoundingClientRect(),
+    displayWidth = displayRectangle.width,
+    displayTextRectangle = displayTextElement.getBoundingClientRect(),
+    displayTextWidth = displayTextRectangle.width;
+
     let buttonText = button.innerText;
 
     if (buttonText == 'Clear'){
-        clearDisplay();
+        clear();
     }
     else if (buttonText == 'Delete'){
         deleteText();
     }
-    else if (buttonText == '+/-'){
-        if (currentNumber != ''){
-            changeSigns();
-        }
-    }
     else if (buttonText == 'Enter'){
-        textArray.push(currentNumber);
-        enter();
+        if (!operatorRegExp.test(displayTextString[lastIndex])){
+            displayTextArray.push(currentNumber);
+            enter();
+        }
     }
-    else {  //numbers and operators
-        if (operatorRegExp.test(buttonText)){
-            if (!textString == '' && !operatorRegExp.test(textString[lastIndex])){ //prevent users from starting the string with an operator, or stringing multiple operators together
-                textString += buttonText;
-                textArray.push(currentNumber);
-                currentNumber = '';
-                textArray.push(buttonText);
+    else {  //numbers, decimals, change signs and operators.
+        if (displayTextWidth < displayWidth){
+            if (operatorRegExp.test(buttonText)){ // ^, *, /, +, and -
+                if (!displayTextString == '' && !operatorRegExp.test(displayTextString[lastIndex])){ //prevent users from starting the string with an operator, or stringing multiple operators together
+                    displayTextString += buttonText;
+                    displayTextArray.push(currentNumber);
+                    currentNumber = '';
+                    displayTextArray.push(buttonText);
+                }
             }
-        }
-        else if (buttonText == '.'){
-            if (!textString == '' && !containsDecimals()){
-                textString += buttonText;
+            else if (buttonText == '+/-'){
+                if (currentNumber != ''){
+                    changeSigns();
+                }
+            }
+            else if (buttonText == '.'){    //decimal points
+                if (!displayTextString == '' && !containsDecimals()){
+                    displayTextString += buttonText;
+                    currentNumber += buttonText;
+                }
+            }
+            else {  //numbers
+                displayTextString += buttonText;
                 currentNumber += buttonText;
-            }
+            }  
+            displayTextElement.innerText = displayTextString;
+            lastIndex = displayTextString.length - 1;
         }
-        else {
-            textString += buttonText;
-            currentNumber += buttonText;
-        }  
-        text.innerText = textString;
-        lastIndex = textString.length - 1;
     }
 }
 
@@ -192,34 +197,35 @@ function containsDecimals(){
     return false;
 }
 
-function clearDisplay(){    
-    text.innerText = '';
-    textString = '';
+function clear(){    
+    displayTextElement.innerText = '';
+    displayTextString = '';
     currentNumber = '';
-    textArray = [];
+    displayTextArray = [];
 }
 
 function deleteText(){
-    textString = textString.slice(0, lastIndex);
-    lastIndex = textString.length - 1;
-    text.innerText = textString;
-    // currentNumber = currentNumber.slice(0, currentNumber.length - 1);
+    displayTextString = displayTextString.slice(0, lastIndex);
+    lastIndex = displayTextString.length - 1;
+    currentNumber = currentNumber.slice(0, currentNumber.length - 1);
+    displayTextElement.innerText = displayTextString;
 }
 
 function changeSigns(){
-    let newString,
-    tempNumber;
+    let temporaryString,
+    temporaryNumber;
 
-    tempNumber = operate(currentNumber, '*', -1);
-    newString = textString.replace(currentNumber,tempNumber);
+    temporaryNumber = operate(currentNumber, '*', -1);
+    temporaryString = displayTextString.replace(currentNumber, temporaryNumber.toString());
 
-    currentNumber = tempNumber;
-    textString = newString;
-    text.innerText = textString;
+    currentNumber = temporaryNumber.toString();
+    displayTextString = temporaryString;
+    lastIndex = displayTextString.length - 1;
+    displayTextElement.innerText = displayTextString;
 }
 
 function enter(){
-    doTheMath(textArray);
+    doTheMath(displayTextArray);
 
     function doTheMath(array){
         let finalAnswer,
@@ -229,53 +235,54 @@ function enter(){
             secondOperandIndex,
             firstOperand,
             secondOperand,
-            operator,
-            exp = '^',
-            mult = '*',
-            div = '/',
-            plus = '+',
-            minus = '-';
+            operator;
 
-        while(operatorRegExp.test(array)){
-            if (array.includes(exp)){
-                operatorIndex = array.indexOf(exp);
-            }
-            else if (array.includes(mult)){
-                operatorIndex = array.indexOf(mult);
-            }
-            else if (array.includes(div)){
-                operatorIndex = array.indexOf(div);
-            }
-            else if (array.includes(plus)){
-                operatorIndex = array.indexOf(plus);
-            }
-            else{ 
-                if ((array.length == 1) && (Math.sign(array[0]) == -1)){
-                    break;
+        
+            while(operatorRegExp.test(array)){
+                if (!exponentialRegExp.test(array)){
+                    if (array.includes('^')){
+                        operatorIndex = array.indexOf('^');
+                    }
+                    else if (array.includes('*')){
+                        operatorIndex = array.indexOf('*');
+                    }
+                    else if (array.includes('/')){
+                        operatorIndex = array.indexOf('/');
+                    }
+                    else if (array.includes('+')){
+                        operatorIndex = array.indexOf('+');
+                    }
+                    else{ 
+                        if ((array.length == 1) && (Math.sign(array[0]) == -1)){
+                            break;
+                        }
+                        else {
+                            operatorIndex = array.indexOf('-');
+                        }
+                    }
                 }
                 else {
-                    operatorIndex = array.indexOf(minus);
+                    break;
                 }
+
+                firstOperandIndex = operatorIndex - 1;
+                secondOperandIndex = operatorIndex + 1;
+
+                firstOperand = parseFloat(array[firstOperandIndex]);
+                secondOperand = parseFloat(array[secondOperandIndex]);
+                operator = array[operatorIndex];
+
+                tempAnswer = operate(firstOperand, operator, secondOperand).toPrecision(4);
+                array.splice(firstOperandIndex, 3, tempAnswer);
             }
 
-            firstOperandIndex = operatorIndex - 1;
-            secondOperandIndex = operatorIndex + 1;
+            finalAnswer = array.toString();
 
-            firstOperand = parseFloat(array[firstOperandIndex]);
-            secondOperand = parseFloat(array[secondOperandIndex]);
-            operator = array[operatorIndex];
+            clear();
+            displayTextElement.innerText = finalAnswer;
+            return finalAnswer;
 
-            tempAnswer = operate(firstOperand, operator, secondOperand);
-            array.splice(firstOperandIndex, 3, tempAnswer);
         }
-
-        finalAnswer = array.toString();
-
-        textString = '';
-        text.innerText = finalAnswer;
-        return finalAnswer;
-
-    }
 }
 
 createButtons();
