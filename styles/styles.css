@@ -54,11 +54,12 @@ p{
     height: 50px;
     width: fit-content;
     /* padding: 10px; */
-    padding: 10px 25px 10px 25px;
+    padding: 10px 15px 10px 10px;
+    /* margin: 10px 15px 10px 15px; */
     align-items: center;
     max-width: inherit;
     overflow: hidden;
-    font-size: 0.8em;
+    font-size: 0.6em;
 }
 
 #buttons{

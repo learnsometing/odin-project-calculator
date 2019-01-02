@@ -1,5 +1,3 @@
-let inputString = '';
-
 function Token(type, value){
     this.type = type;
     this.value = value;
@@ -52,8 +50,6 @@ function tokenize(string){
         }
     }
 }
-
-
 
 function parseInput(input){
     let outputQueue = [], //Using a queue to collect numbers and operators, because the data in the queue will be processed in FIFO order
