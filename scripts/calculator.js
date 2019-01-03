@@ -33,9 +33,6 @@ function subtract(number1, number2){
 function operate(number1, number2, operator){
     let result;
 
-    number1 = parseFloat(number1.value);
-    number2 = parseFloat(number2.value);
-
     if (operator == '^'){
         result = exponent(number1, number2);
     }
@@ -216,13 +213,16 @@ function deleteText(){
 }
 
 function changeSigns(){
-    let numbers = '',
+    let numbers = [],
     tempString = '',
     currentNumber = [];
-    if (negativeSignRegExp.test(displayTextString)){
+    if (displayTextString[0] == '-' && (displayTextString.split(operatorRegExp).length < 2)){   //Change a number's sign back to positive, number at beginning of input. 
+        numbers = displayTextString.split(/''(?=-)/);
+    }
+    else if (negativeSignRegExp.test(displayTextString)){    //Change a number's sign back to positive, number follows an operator.
         numbers = displayTextString.split(/[*/^+-](?=-)/);
     }   
-    else{
+    else{   //Change any number's sign to negative
         numbers = displayTextString.split(operatorRegExp);
     }
     console.log(numbers);
@@ -253,8 +253,8 @@ function enter(){
     }
     
     function isOperator(char) {
-    return /[+*/^-]/.test(char);
-    }
+        return /[+*/^-]/.test(char);
+    }   
     
     function tokenize(string){
         let result = [],  //array of tokens
@@ -290,7 +290,7 @@ function enter(){
     
         function emptyNumberBufferAsLiteral(){
             if (numberBuffer.length){
-                result.push(new Token('Literal', numberBuffer.join('')));
+                result.push(new Token('Literal', parseFloat(numberBuffer.join(''))));
                 numberBuffer = [];
             }
         }
@@ -354,15 +354,15 @@ function enter(){
         while (tokens.length > 1){
             tokens.forEach(token => {
                 if (token.type == 'Operator'){
-                    tempAnswer = operate(tokens[tokens.indexOf(token) - 2], tokens[tokens.indexOf(token) - 1], token.value);
-                    tempAnswer = new Token('Literal', tempAnswer);
-                    tokens.splice((tokens.indexOf(token) - 2), 3, tempAnswer);
+                    tempAnswer = operate(tokens[0].value, tokens[1].value, token.value);
+                    tempAnswer = new Token('Literal', parseFloat(tempAnswer));
+                    tokens.splice(0, 3, tempAnswer);
                 }
             });
         }
 
         finalAnswer = tokens[0].value.toPrecision(4);
-        return finalAnswer;
+        return finalAnswer.toString();
     }
 }
 
