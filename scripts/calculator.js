@@ -220,7 +220,7 @@ function changeSigns(){
     tempString = '',
     currentNumber = [];
     if (negativeSignRegExp.test(displayTextString)){
-        numbers = displayTextString.split(/[-](?=[*/^+-])/);
+        numbers = displayTextString.split(/[*/^+-](?=-)/);
     }   
     else{
         numbers = displayTextString.split(operatorRegExp);
