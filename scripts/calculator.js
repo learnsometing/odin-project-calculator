@@ -52,8 +52,6 @@ function operate(number1, number2, operator){
     return result;
 }
 
-/**********************************************************************************************************************************/
-
 function createButtons(){
     let numbersContainer = document.getElementById("numbers"),
         operatorsContainer = document.getElementById('operators'),
@@ -134,44 +132,49 @@ function labelAndActivateButtons(){
 }
 
 function clicked(button){
-    const display = document.getElementById('display'),
-    displayRectangle = display.getBoundingClientRect(),
-    displayWidth = displayRectangle.width,
-    displayTextRectangle = displayTextElement.getBoundingClientRect(),
-    displayTextWidth = displayTextRectangle.width;
-
     let buttonText = button.innerText;
 
-    if (buttonText == '+/-' || operatorRegExp.test(buttonText) || buttonText == '.' || buttonText == 'Enter'){
-        if (displayTextString.length != 0){
-            if (!lastCharWasDecimal() && !lastCharWasOperator()){ //pass if the last char was not an op or a dec
-                if (buttonText == '+/-'){
-                    changeSigns();
-                }
-                else if (buttonText == 'Enter'){
-                    enter();    
-                }
-                else if (buttonText == '.' || operatorRegExp.test(buttonText)){
-                    if (!decimalInCurrentNumber() || operatorRegExp.test(buttonText)){
-                        displayTextString += buttonText;
-                    }
-                }
+    if (buttonText == 'Enter'){ //needs work on empty values
+        if (!lastCharWasDecimal() && !lastCharWasOperator()){
+            enter();  
+        }  
+    }
+    else if (buttonText == 'Delete'){
+        deleteText();
+    }
+    else if (buttonText == 'Clear'){
+        clear();
+    }
+    else {
+        if (displayTextString.length < 15){
+            if (/\d/.test(buttonText)){
+                displayTextString += buttonText;
             }
             else {
-                alert('Your formula contains an operator or a decimal point at the end of it.\
-                Modify your input to correct this issue and try again.');
+                if (displayTextString.length > 0){
+                    if (!lastCharWasDecimal() && !lastCharWasOperator()){ //pass if the last char was not an op or a dec
+                        if (buttonText == '+/-'){
+                            changeSigns();
+                        }
+                        else if (buttonText == '.' || operatorRegExp.test(buttonText)){
+                            if (!decimalInCurrentNumber() || operatorRegExp.test(buttonText)){
+                                displayTextString += buttonText;
+                            }
+                        }
+                    }   
+                    else {
+                        alert('Your formula contains an operator or a decimal point at the end of it.\
+                        Modify your input to correct this issue and try again.');
+                    }
+                }
+                else {
+                    alert('You cannot start the formula with a decimal point or an operator.')
+                }   
+                
             }
         }
-    }
-    else { //buttons without any logical restrictions on when they are allowed to be pressed.
-        if (buttonText == 'Clear'){
-            clear();
-        }
-        else if (buttonText == 'Delete'){
-            deleteText();
-        }
-        else {
-            displayTextString += buttonText;
+        else { //buttons without any logical restrictions on when they are allowed to be pressed.
+            alert('You have reached the maximum characters allowed. Please Modify your formula or enter it now.');        
         }
     }
 

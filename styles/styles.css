@@ -44,22 +44,20 @@ h5{
     background-color: lightyellow;
     max-width: 400px;
     max-height: 50px;
+    width: 400px;
+    height:  50px;
 }
 
 p{
-    max-height:  inherit;
     display: flex;
     box-sizing: border-box;
-    justify-self: left;
-    height: 50px;
-    width: fit-content;
-    /* padding: 10px; */
-    padding: 10px 15px 10px 10px;
-    /* margin: 10px 15px 10px 15px; */
-    align-items: center;
+    justify-content: center;
+    /* align-items: center; */
+    width: inherit;
+    height: inherit;
     max-width: inherit;
-    overflow: hidden;
-    font-size: 0.6em;
+    max-height:  inherit;
+    padding: 0 10px 0 10px;
 }
 
 #buttons{
