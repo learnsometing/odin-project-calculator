@@ -51,8 +51,7 @@ h5{
 p{
     display: flex;
     box-sizing: border-box;
-    justify-content: center;
-    /* align-items: center; */
+    justify-content: flex-end;
     width: inherit;
     height: inherit;
     max-width: inherit;

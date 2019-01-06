@@ -134,51 +134,112 @@ function labelAndActivateButtons(){
 function clicked(button){
     let buttonText = button.innerText;
 
-    if (buttonText == 'Enter'){ //needs work on empty values
-        if (!lastCharWasDecimal() && !lastCharWasOperator()){
-            enter();  
-        }  
+    switch(buttonText){
+        case 'Enter':
+            if (!lastCharWasDecimal() && !lastCharWasOperator()) {
+                enter();
+            } 
+            break;
+
+        case 'Delete':
+            deleteText();
+            break;
+
+        case 'Clear':
+            clear();
+            break;
+
+        default:
+            parseButtonText(buttonText);
     }
-    else if (buttonText == 'Delete'){
-        deleteText();
-    }
-    else if (buttonText == 'Clear'){
-        clear();
-    }
-    else {
-        if (displayTextString.length < 15){
-            if (/\d/.test(buttonText)){
+
+    function parseButtonText(buttonText) {
+        if (displayTextString.length >= 15) {
+            alert('You have reached the maximum characters allowed. Please Modify your formula or enter it now.');
+            return;
+        }
+
+        // If the buttonText is a digit
+        if (/\d/.test(buttonText)) {
+            displayTextString += buttonText;
+            return;
+        }
+
+        if (displayTextString.length == 0) {
+            alert('You cannot start the formula with a decimal point or an operator.');
+            return;
+        }
+
+        // pass if the last char was not an op or a dec
+        if (lastCharWasDecimal() || lastCharWasOperator()) {
+        alert('Your formula contains an operator or a decimal point at the end of it. Modify your input to correct this issue and try again.');
+                return;
+        }
+
+        if (buttonText == '+/-') {
+            changeSigns();
+        }
+        else if (buttonText == '.' || operatorRegExp.test(buttonText)) {
+            if (!decimalInCurrentNumber() || operatorRegExp.test(buttonText)) {
                 displayTextString += buttonText;
             }
-            else {
-                if (displayTextString.length > 0){
-                    if (!lastCharWasDecimal() && !lastCharWasOperator()){ //pass if the last char was not an op or a dec
-                        if (buttonText == '+/-'){
-                            changeSigns();
-                        }
-                        else if (buttonText == '.' || operatorRegExp.test(buttonText)){
-                            if (!decimalInCurrentNumber() || operatorRegExp.test(buttonText)){
-                                displayTextString += buttonText;
-                            }
-                        }
-                    }   
-                    else {
-                        alert('Your formula contains an operator or a decimal point at the end of it.\
-                        Modify your input to correct this issue and try again.');
-                    }
-                }
-                else {
-                    alert('You cannot start the formula with a decimal point or an operator.')
-                }   
-                
-            }
-        }
-        else { //buttons without any logical restrictions on when they are allowed to be pressed.
-            alert('You have reached the maximum characters allowed. Please Modify your formula or enter it now.');        
         }
     }
 
     displayTextElement.innerText = displayTextString;
+}
+
+function Token(type, value){
+    this.type = type;
+    this.value = value;
+}
+
+function isDigit(char) {
+    return /\d/.test(char);
+}
+
+function isOperator(char) {
+    return /[+*/^-]/.test(char);
+}   
+
+function tokenize(string){
+    let result = [],  //array of tokens
+    numberBuffer = [];  //array that holds digits and symbols that make up one literal
+      
+    // converts the input string to an array of characters
+    string = string.split("");
+
+    string.forEach(function (char, index) {
+        if (isDigit(char)) { //numbers
+            numberBuffer.push(parseFloat(char));
+        }
+        else if (char === '.'){ //decimals
+            numberBuffer.push(char);
+        }
+        else {  //operators and negative signs
+            if ( (index === 0) || (isOperator(string[index - 1]) && isDigit(string[index + 1])) ){
+                if (char === '-'){
+                    numberBuffer.push(char);
+                }
+            }           
+            else {
+                emptyNumberBufferAsLiteral();
+                let operator = new Token('Operator', char);
+                result.push(operator);
+            }
+        } 
+    });
+    if (numberBuffer.length){
+        emptyNumberBufferAsLiteral();
+    }
+    return result;
+
+    function emptyNumberBufferAsLiteral(){
+        if (numberBuffer.length){
+            result.push(new Token('Literal', parseFloat(numberBuffer.join(''))));
+            numberBuffer = [];
+        }
+    }
 }
 
 function decimalInCurrentNumber(){
@@ -219,17 +280,12 @@ function changeSigns(){
     let numbers = [],
     tempString = '',
     currentNumber = [];
-    if (displayTextString[0] == '-' && (displayTextString.split(operatorRegExp).length < 2)){   //Change a number's sign back to positive, number at beginning of input. 
-        numbers = displayTextString.split(/''(?=-)/);
+    
+    if (displayTextString.length > 0){
+        numbers = tokenize(displayTextString);
     }
-    else if (negativeSignRegExp.test(displayTextString)){    //Change a number's sign back to positive, number follows an operator.
-        numbers = displayTextString.split(/[*/^+-](?=-)/);
-    }   
-    else{   //Change any number's sign to negative
-        numbers = displayTextString.split(operatorRegExp);
-    }
-    console.log(numbers);
-    currentNumber = numbers.pop()
+
+    currentNumber = numbers.pop().value;
 
     tempString = displayTextString.slice(0, displayTextString.lastIndexOf(currentNumber.toString()));
 
@@ -245,59 +301,6 @@ function enter(){
     
     displayTextString = processRPN(parseInput(displayTextString));
     displayTextElement.innerText = displayTextString;
-    
-    function Token(type, value){
-        this.type = type;
-        this.value = value;
-    }
-    
-    function isDigit(char) {
-        return /\d/.test(char);
-    }
-    
-    function isOperator(char) {
-        return /[+*/^-]/.test(char);
-    }   
-    
-    function tokenize(string){
-        let result = [],  //array of tokens
-        numberBuffer = [];
-          
-        // converts the input string to an array of characters
-        string = string.split("");
-    
-        string.forEach(function (char, index) {
-            if (isDigit(char)) { //numbers
-                numberBuffer.push(char);
-            }
-            else if (char === '.'){ //decimals
-                numberBuffer.push(char);
-            }
-            else {  //operators and negative signs
-                if ( (index === 0) || (isOperator(string[index - 1]) && isDigit(string[index + 1])) ){
-                    if (char === '-'){
-                        numberBuffer.push(char);
-                    }
-                }           
-                else {
-                    emptyNumberBufferAsLiteral();
-                    let operator = new Token('Operator', char);
-                    result.push(operator);
-                }
-            } 
-        });
-        if (numberBuffer.length){
-            emptyNumberBufferAsLiteral();
-        }
-        return result;
-    
-        function emptyNumberBufferAsLiteral(){
-            if (numberBuffer.length){
-                result.push(new Token('Literal', parseFloat(numberBuffer.join(''))));
-                numberBuffer = [];
-            }
-        }
-    }
     
     function parseInput(input){
         let outputQueue = [], //Using a queue to collect numbers and operators, because the data in the queue will be processed in FIFO order
@@ -352,19 +355,23 @@ function enter(){
 
     function processRPN(tokens){
         let tempAnswer,
-        finalAnswer;
+        finalAnswer = '';
 
         while (tokens.length > 1){
             tokens.forEach(token => {
                 if (token.type == 'Operator'){
-                    tempAnswer = operate(tokens[0].value, tokens[1].value, token.value);
+                    let operatorIndex = tokens.indexOf(token);
+
+                    tempAnswer = operate(tokens[operatorIndex - 2].value, tokens[operatorIndex - 1].value, token.value);
                     tempAnswer = new Token('Literal', parseFloat(tempAnswer));
-                    tokens.splice(0, 3, tempAnswer);
+                    tokens.splice(operatorIndex - 2, 3, tempAnswer);
                 }
             });
         }
 
-        finalAnswer = tokens[0].value.toPrecision(4);
+        if (tokens.length){
+            finalAnswer = tokens[0].value.toPrecision(4);   
+        }
         return finalAnswer.toString();
     }
 }
