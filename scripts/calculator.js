@@ -3,7 +3,10 @@ displayTextString = '';
 
 const operatorRegExp = /[*/^+-]/;
 
-function operate(number1, number2, operator){ //Calls the relevant math function depending on what operation is required.
+createButtons();
+labelAndActivateButtons();
+
+function operate(number1, number2, operator){ //Calls the relevant math function depending on the operation is required.
     let result;
 
     if (operator == '^'){
@@ -143,6 +146,9 @@ function clicked(button){   //Calls the function corresponding to the button tha
             if (!lastCharWasDecimal() && !lastCharWasOperator()) {
                 enter();
             } 
+            else {
+                displayErrorMessages(3)
+            }
             break;
 
         case 'Delete':
@@ -159,111 +165,56 @@ function clicked(button){   //Calls the function corresponding to the button tha
 
     function parseButtonText(buttonText) {
         if (displayTextString.length >= 15) {
-            alert('You have reached the maximum characters allowed. Please Modify your formula or enter it now.');
+            displayErrorMessages(0);
             return;
-        }
+        }   
         // If the buttonText is a digit
-        if (/\d/.test(buttonText)) {
+        if (isDigit(buttonText)) {
             displayTextString += buttonText;
             return;
         }
         if (displayTextString.length == 0) {
-            alert('You cannot start the formula with a decimal point or an operator.');
+            displayErrorMessages(1);
             return;
         }
         // pass if the last char was not an op or a dec
         if (lastCharWasDecimal() || lastCharWasOperator()) {
-        alert('Your formula contains an operator or a decimal point at the end of it. Modify your input to correct this issue and try again.');
-                return;
+            displayErrorMessages(3);
+            return;
         }
+
         if (buttonText == '+/-') {
             changeSigns();
         }
-        else if (buttonText == '.' || operatorRegExp.test(buttonText)) {
-            if (!decimalInCurrentNumber() || operatorRegExp.test(buttonText)) {
+        else if (buttonText == '.'){
+            if (!decimalInCurrentNumber()){ //Don't want to allow the user to create IP-address like numbers (ex: 1.1.0)
                 displayTextString += buttonText;
             }
+            else {
+                displayErrorMessages(2);    
+            }
+        } 
+        else {
+            displayTextString += buttonText;
+        }
+    }
+    
+    function displayErrorMessages(status){
+        if (status == 0){
+            alert('You have reached the maximum characters allowed. Please Modify your formula or enter it now.');
+        }
+        else if (status == 1){
+            alert('You cannot start the formula with a decimal point or an operator.');
+        }
+        else if (status == 2){
+            alert('The current number in your formula already contains a decimal point. Modify your input to correct this issue and try again.');
+        }
+        else {
+            alert('Your formula contains an operator or a decimal point at the end of it. Modify your input to correct this issue and try again.');
         }
     }
 
     displayTextElement.innerText = displayTextString;
-}
-
-function Token(type, value){ 
-    this.type = type;
-    this.value = value;
-}
-
-function isDigit(char) {
-    return /\d/.test(char);
-}
-
-function isOperator(char) {
-    return /[+*/^-]/.test(char);
-}   
-
-function tokenize(string){  //converts the string of numbers and operators to tokens for parsing. 
-    let result = [],  //array of tokens
-    numberBuffer = [];  //array that holds digits and symbols that make up a number literal
-      
-    // converts the input string to an array of characters
-    string = string.split("");
-
-    string.forEach(function (char, index) {
-        if (isDigit(char)) { //numbers
-            numberBuffer.push(parseFloat(char));
-        }
-        else if (char === '.'){ //decimals
-            numberBuffer.push(char);
-        }
-        else {  //operators and negative signs
-            if ( (index === 0) || (isOperator(string[index - 1]) && isDigit(string[index + 1])) ){ //Adds negative signs to the number literal.
-                if (char === '-'){
-                    numberBuffer.push(char);
-                }
-            }           
-            else {  //Creates operator tokens. 
-                emptyNumberBufferAsLiteral();
-                let operator = new Token('Operator', char);
-                result.push(operator);
-            }
-        } 
-    });
-    if (numberBuffer.length){   //Empties the numberBuffer at the end of the string.
-        emptyNumberBufferAsLiteral();
-    }
-    return result;
-
-    function emptyNumberBufferAsLiteral(){  //Create a token from the characters held in the number buffer. 
-        if (numberBuffer.length){
-            result.push(new Token('Literal', parseFloat(numberBuffer.join(''))));
-            numberBuffer = [];
-        }
-    }
-}
-
-function decimalInCurrentNumber(){
-    let numbers = displayTextString.split(operatorRegExp),
-    currentNumber = numbers.pop();
-
-    for (let i = 0; i < currentNumber.length; i++){
-        if (currentNumber[i] == '.'){
-            return true;
-        }
-    }
-    return false;
-}
-
-function lastCharWasOperator(){
-    let lastCharacter = displayTextString.split('').pop();
-
-    return operatorRegExp.test(lastCharacter);
-}
-
-function lastCharWasDecimal(){
-    let lastCharacter = displayTextString.split('').pop();
-
-    return lastCharacter == '.';
 }
 
 function clear(){   //Clear the display and the string that holds display contents. 
@@ -375,5 +326,79 @@ function enter(){
     }
 }
 
-createButtons();
-labelAndActivateButtons();
+function Token(type, value){
+    this.type = type;
+    this.value = value;
+}
+
+function isDigit(char) {
+    return /\d/.test(char);
+}
+
+function isOperator(char) {
+    return /[+*/^-]/.test(char);
+}   
+
+function tokenize(string){  //converts the string of numbers and operators to tokens for parsing. 
+    let result = [],  //array of tokens
+    numberBuffer = [];  //array that holds digits and symbols that make up a number literal
+      
+    // converts the input string to an array of characters
+    string = string.split("");
+
+    string.forEach(function (char, index) {
+        if (isDigit(char)) { //numbers
+            numberBuffer.push(parseFloat(char));
+        }
+        else if (char === '.'){ //decimals
+            numberBuffer.push(char);
+        }
+        else {  //operators and negative signs
+            if ( (index === 0) || (isOperator(string[index - 1]) && isDigit(string[index + 1])) ){ //Adds negative signs to the number literal.
+                if (char === '-'){
+                    numberBuffer.push(char);
+                }
+            }           
+            else {  //Creates operator tokens. 
+                emptyNumberBufferAsLiteral();
+                let operator = new Token('Operator', char);
+                result.push(operator);
+            }
+        } 
+    });
+    if (numberBuffer.length){   //Empties the numberBuffer at the end of the string.
+        emptyNumberBufferAsLiteral();
+    }
+    return result;
+
+    function emptyNumberBufferAsLiteral(){  //Create a token from the characters held in the number buffer. 
+        if (numberBuffer.length){
+            result.push(new Token('Literal', parseFloat(numberBuffer.join(''))));
+            numberBuffer = [];
+        }
+    }
+}
+
+function decimalInCurrentNumber(){
+    let numbers = displayTextString.split(operatorRegExp),
+    currentNumber = numbers.pop();
+
+    for (let i = 0; i < currentNumber.length; i++){
+        if (currentNumber[i] == '.'){
+            return true;
+        }
+    }
+    return false;
+}
+
+function lastCharWasOperator(){
+    let lastCharacter = displayTextString.split('').pop();
+
+    return operatorRegExp.test(lastCharacter);
+}
+
+function lastCharWasDecimal(){
+    let lastCharacter = displayTextString.split('').pop();
+
+    return lastCharacter == '.';
+}
