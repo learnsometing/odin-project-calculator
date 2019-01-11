@@ -198,7 +198,7 @@ function clicked(button){   //Calls the function corresponding to the button tha
             displayTextString += buttonText;
         }
     }
-    
+
     function displayErrorMessages(status){
         if (status == 0){
             alert('You have reached the maximum characters allowed. Please Modify your formula or enter it now.');
@@ -228,20 +228,24 @@ function deleteText(){  //Delete the last character in the current display text 
 }
 
 function changeSigns(){ //Changes the sign of the current number to negative or positive.
-    let numbers = [],
+    let tokens = [],
     tempString = '',
-    currentNumber = [];
+    newNumber,
+    currentNumber;
     
     if (displayTextString.length > 0){
-        numbers = tokenize(displayTextString);
+        tokens = tokenize(displayTextString);
     }
 
-    currentNumber = numbers.pop().value;
+    currentNumber = tokens.pop().value;
 
-    tempString = displayTextString.slice(0, displayTextString.lastIndexOf(currentNumber.toString()));
+    newNumber = new Token('Literal', currentNumber * -1);
+    
+    tokens.push(newNumber);
 
-    currentNumber *= -1;
-    tempString += currentNumber.toString();
+    tokens.forEach(token =>{
+        tempString += token.value.toString();
+    })
     
     displayTextString = tempString;
     displayTextElement.innerText = displayTextString;     
@@ -320,7 +324,7 @@ function enter(){
         }
 
         if (tokens.length){
-            finalAnswer = tokens[0].value.toPrecision(4);   
+            finalAnswer = tokens[0].value;   
         }
         return finalAnswer.toString();
     }
@@ -353,10 +357,31 @@ function tokenize(string){  //converts the string of numbers and operators to to
         else if (char === '.'){ //decimals
             numberBuffer.push(char);
         }
+        else if (char === 'e'){
+            numberBuffer.push(char);
+        }
         else {  //operators and negative signs
-            if ( (index === 0) || (isOperator(string[index - 1]) && isDigit(string[index + 1])) ){ //Adds negative signs to the number literal.
-                if (char === '-'){
+            if (char == '-'){
+                //Adds negative signs to the number literal.
+                if (index == 0 
+                    || (isOperator(string[index - 1]) && isDigit(string[index + 1])
+                    || (string[index - 1] == 'e'))){
                     numberBuffer.push(char);
+                }
+                else {
+                    emptyNumberBufferAsLiteral();
+                    let operator = new Token('Operator', char);
+                    result.push(operator);
+                }
+            }
+            else if (char == '+'){
+                if (string[index - 1] == 'e'){
+                    numberBuffer.push(char);
+                }
+                else {
+                    emptyNumberBufferAsLiteral();
+                    let operator = new Token('Operator', char);
+                    result.push(operator);
                 }
             }           
             else {  //Creates operator tokens. 
