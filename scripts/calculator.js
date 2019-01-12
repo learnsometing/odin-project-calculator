@@ -254,6 +254,7 @@ function changeSigns(){ //Changes the sign of the current number to negative or 
 function enter(){
     
     displayTextString = processRPN(parseInput(displayTextString));
+    
     displayTextElement.innerText = displayTextString;
     
     function parseInput(input){ //Parses the array of tokens to reverse polish notation using a modified form of the shunting-yard algorithm.
@@ -324,9 +325,14 @@ function enter(){
         }
 
         if (tokens.length){
-            finalAnswer = tokens[0].value;   
+            finalAnswer = tokens[0].value.toString();
+            
+            if (finalAnswer.length > 15){
+                finalAnswer = new Number(finalAnswer)
+                finalAnswer = finalAnswer.toPrecision(8);    
+            }
         }
-        return finalAnswer.toString();
+        return finalAnswer;
     }
 }
 
