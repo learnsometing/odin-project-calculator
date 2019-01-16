@@ -1,19 +1,25 @@
-body{
+html, body{
     display:flex;
     justify-content: center;
+    align-items: center;
     font-size: 50px;
+    height: 100%;
+    width: 100%;
+    background-image: url('./Pics/desk-background');
 }
 
 #frame{
     display:inline-grid;
     width: 10em;
     height: 11em;
-    background-color:black;
+    background-color: darkslategray;
+    border: 5px slategray outset;
+    border-radius: 8px;
     grid-template-rows: repeat(11, 1em);
     grid-template-columns: repeat(10, 1em);
     grid-template-areas:    '. . . . . . . . . .'
-                            '. logo logo logo logo logo logo logo logo .'
-                            '. display display display display display display display display .'
+                            '. displayAndLogo displayAndLogo displayAndLogo displayAndLogo displayAndLogo displayAndLogo displayAndLogo displayAndLogo .'
+                            '. displayAndLogo displayAndLogo displayAndLogo displayAndLogo displayAndLogo displayAndLogo displayAndLogo displayAndLogo .'
                             '. . . . . . . . . .'
                             '. . . . . . . . . .'
                             '. buttons buttons buttons buttons buttons buttons buttons buttons .'
@@ -24,9 +30,14 @@ body{
                             '. . . . . . . . . .';
 }
 
+#displayAndLogo{
+    grid-area: displayAndLogo;
+    border: 5px slategray inset;
+}
 #logo{
     display: flex;
-    grid-area: logo;
+    width: 390px;
+    height: 40px;
     background-color: lightgoldenrodyellow;
     align-items: center;
 }
@@ -40,11 +51,10 @@ h5{
 }
 
 #display{
-    grid-area: display;
     background-color: lightyellow;
-    max-width: 400px;
-    max-height: 50px;
-    width: 400px;
+    /* width: 390px; */
+    max-height: px;
+    width: 390px;
     height:  50px;
 }
 
@@ -76,8 +86,4 @@ p{
     display:inline-grid;
     grid-template-columns: 2em;
     grid-template-rows: repeat(5, 1em);
-}
-    
-button{
-    border-width: 4px;
 }
