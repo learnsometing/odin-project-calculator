@@ -6,7 +6,8 @@ const operatorRegExp = /[*/^+-]/;
 createButtons();
 labelAndActivateButtons();
 
-function operate(number1, number2, operator){ //Calls the relevant math function depending on the operation is required.
+//Calls the relevant math function depending on the operation is required.
+function operate(number1, number2, operator){ 
     let result;
 
     if (operator == '^'){
@@ -47,8 +48,8 @@ function operate(number1, number2, operator){ //Calls the relevant math function
 
     return result;
 }
-
-function createButtons(){ //Make the HTML button elements and add them to the correct div element. 
+//Make the HTML button elements and add them to the correct div element.
+function createButtons(){  
     let numbersContainer = document.getElementById("numbers"),
         operatorsContainer = document.getElementById('operators'),
         button;
@@ -65,8 +66,8 @@ function createButtons(){ //Make the HTML button elements and add them to the co
         }
     }
 }
-
-function labelAndActivateButtons(){ //Label the buttons, set their IDs and text, and add event listeners to each button. 
+//Label the buttons, set their IDs and text, and add event listeners to each button. 
+function labelAndActivateButtons(){ 
     let buttons = document.querySelectorAll('button');
 
     function labelButtons(){
@@ -137,8 +138,8 @@ function labelAndActivateButtons(){ //Label the buttons, set their IDs and text,
     labelButtons();
     activateButtons();
 }
-
-function clicked(button){   //Calls the function corresponding to the button that was just pressed. 
+//Calls the function corresponding to the button that was just pressed.
+function clicked(button){    
     let buttonText = button.innerText;
 
     switch(buttonText){
@@ -216,18 +217,18 @@ function clicked(button){   //Calls the function corresponding to the button tha
 
     displayTextElement.innerText = displayTextString;
 }
-
-function clear(){   //Clear the display and the string that holds display contents. 
+//Clear the display and the string that holds display contents.
+function clear(){    
     displayTextElement.innerText = '';
     displayTextString = '';
 }
-
-function deleteText(){  //Delete the last character in the current display text string. 
+//Delete the last character in the current display text string. 
+function deleteText(){  
     displayTextString = displayTextString.slice(0, -1);
     displayTextElement.innerText = displayTextString;
 }
-
-function changeSigns(){ //Changes the sign of the current number to negative or positive.
+//Changes the sign of the current number to negative or positive.
+function changeSigns(){ 
     let tokens = [],
     tempString = '',
     newNumber,
@@ -256,24 +257,26 @@ function enter(){
     displayTextString = processRPN(parseInput(displayTextString));
     
     displayTextElement.innerText = displayTextString;
-    
-    function parseInput(input){ //Parses the array of tokens to reverse polish notation using a modified form of the shunting-yard algorithm.
-        let outputQueue = [], //Using a queue to collect numbers and operators, because the data in the queue will be processed in FIFO order.
-            operatorStack = []; //Using a stack to collect operators while tokens are parsed, because we will need to access newly added tokens first.
-    
-        Array.prototype.peek = function() { //return the top of the stack. 
+    //Parses the array of tokens to reverse polish notation using a modified form of the shunting-yard algorithm.
+    function parseInput(input){ 
+        //Using a queue to collect numbers and operators, because the data in the queue will be processed in FIFO order.
+        let outputQueue = [], 
+        //Using a stack to collect operators while tokens are parsed, because we will need to access newly added tokens first.
+            operatorStack = []; 
+        //return the top of the stack. 
+        Array.prototype.peek = function() { 
             return this.slice(-1)[0];
         }
-    
-        const associativity = { //Need to know if the operator is right or left associative when parsing to reverse polish notation.
+        //Need to know if the operator is right or left associative when parsing to reverse polish notation.
+        const associativity = { 
             '^': 'right',
             '*': 'left',
             '/': 'left',
             '+': 'left',
             '-': 'left'
         },
-    
-        operatorPrecedence = {  //Need to know the order of operations when parsing to reverse polish notation.
+        //Need to know the order of operations when parsing to reverse polish notation.
+        operatorPrecedence = {  
             '^': 4,
             '*': 3,
             '/': 3,
@@ -290,14 +293,14 @@ function enter(){
         };
     
         let tokens = tokenize(input);
-        
-        tokens.forEach(token => {   //Modified shunting-yard algorithm.
+        //Modified shunting-yard algorithm.
+        tokens.forEach(token => {   
             if (token.type === 'Literal'){
                 outputQueue.push(token);
             }
             else {
-                while (operatorStack.peek() && ((token.precedence() < operatorStack.peek().precedence()) 
-                    || ((token.precedence() == operatorStack.peek().precedence()) && operatorStack.peek().associativity() == 'left'))){
+                while (operatorStack.peek() && (token.precedence() < operatorStack.peek().precedence() 
+                    || (token.precedence() == operatorStack.peek().precedence() && operatorStack.peek().associativity() == 'left'))){
                         outputQueue.push(operatorStack.pop());
                 }
                 
@@ -307,21 +310,20 @@ function enter(){
         
         return outputQueue.concat(operatorStack.reverse());
     }
-
-    function processRPN(tokens){    //Evaluates the reverse polish notation array of tokens to give a single answer. 
+    //Evaluates the reverse polish notation array of tokens to give a single answer. 
+    function processRPN(tokens){    
         let tempAnswer,
         finalAnswer = '';
 
         while (tokens.length > 1){  
-            tokens.forEach(token => {
-                if (token.type == 'Operator'){
-                    let operatorIndex = tokens.indexOf(token);
-
-                    tempAnswer = operate(tokens[operatorIndex - 2].value, tokens[operatorIndex - 1].value, token.value);
+            for (let i = 0; i < tokens.length; i++){
+                if (tokens[i].type == 'Operator'){
+                    tempAnswer = operate(tokens[i - 2].value, tokens[i - 1].value, tokens[i].value);
                     tempAnswer = new Token('Literal', parseFloat(tempAnswer));
-                    tokens.splice(operatorIndex - 2, 3, tempAnswer);
+                    tokens.splice(i - 2, 3, tempAnswer);
+                    break;
                 }
-            });
+            }
         }
 
         if (tokens.length){
@@ -348,8 +350,8 @@ function isDigit(char) {
 function isOperator(char) {
     return /[+*/^-]/.test(char);
 }   
-
-function tokenize(string){  //converts the string of numbers and operators to tokens for parsing. 
+//converts the string of numbers and operators to tokens for parsing.
+function tokenize(string){   
     let result = [],  //array of tokens
     numberBuffer = [];  //array that holds digits and symbols that make up a number literal
       
@@ -357,45 +359,35 @@ function tokenize(string){  //converts the string of numbers and operators to to
     string = string.split("");
 
     string.forEach(function (char, index) {
-        if (isDigit(char)) { //numbers
+        //numbers
+        if (isDigit(char)){
             numberBuffer.push(parseFloat(char));
         }
-        else if (char === '.'){ //decimals
+        //decimals and scientific notation
+        else if (char == '.' || char == 'e'){
             numberBuffer.push(char);
         }
-        else if (char === 'e'){
-            numberBuffer.push(char);
+        //operators and negative signs
+        else {
+            parseOperator(char);
         }
-        else {  //operators and negative signs
-            if (char == '-'){
-                //Adds negative signs to the number literal.
-                if (index == 0 
-                    || (isOperator(string[index - 1]) && isDigit(string[index + 1])
-                    || (string[index - 1] == 'e'))){
-                    numberBuffer.push(char);
-                }
-                else {
-                    emptyNumberBufferAsLiteral();
-                    let operator = new Token('Operator', char);
-                    result.push(operator);
-                }
+        
+        function parseOperator(char){
+            //  Adds operator (plus or minus sign) to the number buffer if it is part of scientific notation 
+            if (string[index - 1] == 'e'){
+                numberBuffer.push(char);
             }
-            else if (char == '+'){
-                if (string[index - 1] == 'e'){
-                    numberBuffer.push(char);
-                }
-                else {
-                    emptyNumberBufferAsLiteral();
-                    let operator = new Token('Operator', char);
-                    result.push(operator);
-                }
-            }           
-            else {  //Creates operator tokens. 
+            //  Adds operator (minus sign) to the number buffer if it is intended to be a negative sign
+            else if (index == 0 || isOperator(string[index - 1]) && isDigit(string[index + 1])){
+                numberBuffer.push(char);
+            }      
+            //  Creates new literal and operator tokens and adds them to the results array. 
+            else {  
                 emptyNumberBufferAsLiteral();
                 let operator = new Token('Operator', char);
                 result.push(operator);
             }
-        } 
+        }
     });
     if (numberBuffer.length){   //Empties the numberBuffer at the end of the string.
         emptyNumberBufferAsLiteral();
@@ -408,6 +400,8 @@ function tokenize(string){  //converts the string of numbers and operators to to
             numberBuffer = [];
         }
     }
+
+    
 }
 
 function decimalInCurrentNumber(){
