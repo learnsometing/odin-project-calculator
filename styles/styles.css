@@ -12,7 +12,7 @@ html, body{
     display:inline-grid;
     width: 4em;
     height: 6em;
-    background-color: #4d0e0c;
+    background-color: #441013;
     border: 5px outset #972622;
     grid-template-rows: repeat(6, 1em);
     grid-template-columns: repeat(4, 1em);
