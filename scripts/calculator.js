@@ -90,7 +90,7 @@ function labelAndActivateButtons(){
 
                 case '13':
                 button.id = 'delete'
-                button.innerText = 'Delete'
+                button.innerText = 'Del'
                 break;
 
                 case '14':
@@ -152,7 +152,7 @@ function clicked(button){
             }
             break;
 
-        case 'Delete':
+        case 'Del':
             deleteText();
             break;
 

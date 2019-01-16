@@ -2,88 +2,82 @@ html, body{
     display:flex;
     justify-content: center;
     align-items: center;
-    font-size: 50px;
+    font-size: 75px;
     height: 100%;
     width: 100%;
-    background-image: url('./Pics/desk-background');
+    background-image: url('./Pics/abstract-low-poly');
 }
 
 #frame{
     display:inline-grid;
-    width: 10em;
-    height: 11em;
-    background-color: darkslategray;
-    border: 5px slategray outset;
-    border-radius: 8px;
-    grid-template-rows: repeat(11, 1em);
-    grid-template-columns: repeat(10, 1em);
-    grid-template-areas:    '. . . . . . . . . .'
-                            '. displayAndLogo displayAndLogo displayAndLogo displayAndLogo displayAndLogo displayAndLogo displayAndLogo displayAndLogo .'
-                            '. displayAndLogo displayAndLogo displayAndLogo displayAndLogo displayAndLogo displayAndLogo displayAndLogo displayAndLogo .'
-                            '. . . . . . . . . .'
-                            '. . . . . . . . . .'
-                            '. buttons buttons buttons buttons buttons buttons buttons buttons .'
-                            '. buttons buttons buttons buttons buttons buttons buttons buttons .'
-                            '. buttons buttons buttons buttons buttons buttons buttons buttons .'
-                            '. buttons buttons buttons buttons buttons buttons buttons buttons .'
-                            '. buttons buttons buttons buttons buttons buttons buttons buttons .'
-                            '. . . . . . . . . .';
-}
-
-#displayAndLogo{
-    grid-area: displayAndLogo;
-    border: 5px slategray inset;
-}
-#logo{
-    display: flex;
-    width: 390px;
-    height: 40px;
-    background-color: lightgoldenrodyellow;
-    align-items: center;
+    width: 4em;
+    height: 6em;
+    background-color: #4d0e0c;
+    border: 5px outset #972622;
+    grid-template-rows: repeat(6, 1em);
+    grid-template-columns: repeat(4, 1em);
+    grid-template-areas:    'display display display display'
+                            'buttons buttons buttons buttons'
+                            'buttons buttons buttons buttons'
+                            'buttons buttons buttons buttons'
+                            'buttons buttons buttons buttons'
+                            'buttons buttons buttons buttons';
 }
 
 h5{
     display: inline;
-    font-size: 20px;
+    font-size: 15px;
     margin: 0;
     padding-left: 1.25em;
     padding-right: 1.25em;
 }
 
 #display{
-    background-color: lightyellow;
-    /* width: 390px; */
-    max-height: px;
-    width: 390px;
-    height:  50px;
+    display: flex;
+    width: 300px;
+    height: 50px;
+    font-size: 35px;
+    align-items: center;
+    background-color: #0f0913;
 }
 
 p{
     display: flex;
     box-sizing: border-box;
     justify-content: flex-end;
-    width: inherit;
-    height: inherit;
+    width: 300px;
+    height: fit-content;
     max-width: inherit;
     max-height:  inherit;
     padding: 0 10px 0 10px;
+    color: #d73934;
+    font-family: 'Megrim', cursive;
 }
 
 #buttons{
     grid-area: buttons;
     display: inline-grid;
-    grid-template-columns: [numbersStart] 6em [numbersEnd operatorsStart] 2em [operatorsEnd];
+    grid-template-columns: [numbersStart] 3em [numbersEnd operatorsStart] 1em [operatorsEnd];
     grid-template-rows: [buttonsStart] 5em [buttonsEnd];
+}
+
+button{
+    background-color: #151121;
+    color: #d53934;
+    padding: 0;
+    font-family: 'Megrim', cursive;
+    font-size: 26px;
+    border: 1px solid #03040f;
 }
 
 #numbers{
     display:inline-grid;
-    grid-template-columns: repeat(3, 2em);
+    grid-template-columns: repeat(3, 1em);
     grid-template-rows: repeat(5, 1em);
 }
 
 #operators{
     display:inline-grid;
-    grid-template-columns: 2em;
+    grid-template-columns: 1em;
     grid-template-rows: repeat(5, 1em);
 }
