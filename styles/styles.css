@@ -25,17 +25,17 @@ html, body{
 
 #display{
     display: flex;
-    grid-area: display;
-    max-width: 300px;
-    max-height: 50px;
+    grid-area: logo;
     font-size: 35px;
     align-items: center;
-    background-color: #721a17;
+    background-color: #0f0913;
 }
 
 #logo{
     display: flex;
     grid-area: logo;
+    width: 300px;
+    height: 25px;
     justify-content: center;
     color: #0368a8;
     font-size: 25px;
