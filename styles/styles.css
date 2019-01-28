@@ -10,8 +10,6 @@ html, body{
 
 #frame{
     display:inline-grid;
-    width: 4em;
-    height: 6em;
     background-color: #441013;
     border: 5px outset #972622;
     grid-template-rows: [displayStart] 0.67em [displayEnd logoStart] 0.33em [logoEnd buttonStart] repeat(5, 1em) [buttonEnd];
@@ -27,18 +25,17 @@ html, body{
 
 #display{
     display: flex;
-    width: 300px;
-    height: 50px;
+    grid-area: display;
+    max-width: 300px;
+    max-height: 50px;
     font-size: 35px;
     align-items: center;
-    background-color: #0f0913;
+    background-color: #721a17;
 }
 
 #logo{
     display: flex;
     grid-area: logo;
-    width: 300px;
-    height: 25px;
     justify-content: center;
     color: #0368a8;
     font-size: 25px;
