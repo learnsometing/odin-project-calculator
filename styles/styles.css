@@ -25,7 +25,9 @@ html, body{
 
 #display{
     display: flex;
-    grid-area: logo;
+    grid-area: display;
+    max-width: 300px;
+    max-height: 50px;
     font-size: 35px;
     align-items: center;
     background-color: #0f0913;
