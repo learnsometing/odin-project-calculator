@@ -1,5 +1,5 @@
 # Web Development 101 - JS Calculator
-The last [JavaScript project](https://www.theodinproject.com/courses/web-development-101/lessons/calculator) I developed in Web Development 101 is a JS calculator that features tokenizing and the shunting-yard algorithm. The tokenizer and algorithm are used to parse user input to [Reverse Polish notation](https://en.wikipedia.org/wiki/Reverse_Polish_notation) so order of operations is achieved successfully.
+This JS calculator script that interacts with the HTML DOM tree is the last [JavaScript project](https://www.theodinproject.com/courses/web-development-101/lessons/calculator) I developed in Web Development 101. It features CSS styling, tokenizing and the shunting-yard algorithm. The tokenizer and algorithm are used to parse user input to [Reverse Polish notation](https://en.wikipedia.org/wiki/Reverse_Polish_notation) to preserve order of operations.
 ## Getting Started
 ### Prerequisites
 - A web browser of your choice with JavaScript enabled.
